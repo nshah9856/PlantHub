@@ -14,6 +14,17 @@ CCS811 airSensor(CCSAddr);
 const int wetThreshold = 400;
 const int dryThreshold = 250;
 
+uint8_t water[8] = {
+  0b00100,
+  0b00100,
+  0b01010,
+  0b01010,
+  0b10001,
+  0b10001,
+  0b01010,
+  0b00100
+};
+
 int readSoil() {
   digitalWrite(SoilMoisturePower, HIGH);//turn monitoring "On"
   delay(10);//wait 10 milliseconds 
@@ -24,15 +35,20 @@ int readSoil() {
 
 void setup() {
   Serial.begin(9600);
-
   lcd.begin(16, 2);
-  lcd.setCursor(0, 0);
+
+  #if 1
+    lcd.createChar(1, water);
+  #endif
 
   pinMode(SoilMoisturePower, OUTPUT);         //Set D6 as an OUTPUT
   digitalWrite(SoilMoisturePower, LOW);       //Turn it Off when not in use
 
   airSensor.begin();
-  
+
+  lcd.setCursor(0, 0);
+
+  lcd.write(byte(1));
 }
 
 void loop() {
